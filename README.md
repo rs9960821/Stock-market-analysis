@@ -6,6 +6,12 @@
 
 抓取後匯入MongoDB，並藉由圖形繪製K線、布林通道、移動平均線、買賣超數量及成交量。
 
+運用技術：Python, Scrapy, Pandas, matplotlib, Numpy, Json
+
+開發工具：Jupyter Notebook, VS Code 
+
+專案環境：OS - Windows, DB - MongoDB
+
 ![]( 0050.png)
 ![]( 2330.png)
 ![]( 3008.png)
