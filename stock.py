@@ -8,6 +8,7 @@ class CrawlTest(scrapy.Spider):
     name = 'stock'
 
     def start_requests(self):
+        #判斷資料庫中是否有數據，如果沒有就先從2018/12/27的資料開始爬取，獲得數據量
         try:
             result = self.collection.find()
             df = pd.DataFrame([i for i in result]).drop(columns="_id")
@@ -26,6 +27,7 @@ class CrawlTest(scrapy.Spider):
             yield self.parse(url, url2, url3, time1, time2)
 
     def __init__(self):
+        #連接資料庫
         self.client = pymongo.MongoClient("localhost", port = 27017)
         self.db = self.client.StockData
         self.collection = self.db.StockDec
@@ -46,6 +48,7 @@ class CrawlTest(scrapy.Spider):
         time2 = time2
         dataDict = {}
         d_list = []
+        #判斷今日是否開盤，沒有開盤則更新url編碼，避免格式抓取數據資料錯誤
         try:
             date = raw2Data['data'][0]['date'] 
             name = raw3Data['data'][0]['200009']
