@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1292]:
-
-
 import pymongo
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,78 +10,19 @@ pd.set_option('display.max_columns', 3000)
 pd.set_option('display.width', 3000)
 sns.set(font = ['Microsoft YaHei'])
 
-
-# In[1293]:
-
-
 client = pymongo.MongoClient('localhost', 27017)
-db = client.S2330Data
-collection = db.S2330Dec
-
-
-# In[1294]:
-
+db = client.StockData
+collection = db.StockDec
 
 result = collection.find()
 df = pd.DataFrame([i for i in result]).drop(columns="_id")
 
-
-# In[1295]:
-
-
-df.shape
-
-
-# In[1296]:
-
-
+# df_2 = df["日期"]
+# df_2 = df_2.astype("string")
+# L = []
+# for i in df_2:
+#     str(i).replace('-','/')  
 df = df[df["日期"] != '0']
-
-
-# In[1297]:
-
-
-df["日期"].unique()
-
-
-# In[1298]:
-
-
-df_2 = df["日期"]
-df_2 = df_2.astype("string")
-L = []
-for i in df_2:
-    str(i).replace('-','/')  
-print(list(df_2)[20])
-
-
-# In[1299]:
-
-
-df["高價"].unique()
-
-
-# In[1300]:
-
-
-df["低價"].unique()
-
-
-# In[1301]:
-
-
-df["買賣超"].unique()
-
-
-# In[1302]:
-
-
-df.dtypes
-
-
-# In[1303]:
-
-
 df["日期"] = pd.to_datetime(df["日期"])
 cList = ["開盤","高價","低價","收盤", "成交量"]
 for i in df.columns:
@@ -97,40 +32,14 @@ aList = ["投信","外資","自營商","買賣超", "加總"]
 for i in df.columns:
     if i in aList:
         df[i] = df[i].astype("int")
-df.dtypes
-
-
-# In[1304]:
-
-
-df["日期"].unique()
-
-
-# In[1305]:
-
-
-print(df_2)
-
-
-# In[1306]:
-
 
 def adjustDate():
     global df
-#     df["日期"] = (df["日期"]).astype("string")
-#     xs = [datetime.strptime(d, '%Y-%m-%d').date() for d in df["日期"]]
     alldaylocator = mdate.WeekdayLocator()#設定日期
     plt.gcf().autofmt_xdate()#自動調整刻度
     plt.gca().xaxis.set_major_locator(alldaylocator)#設定美日為主要刻度
     plt.gca().xaxis.set_major_formatter(mdate.DateFormatter('%m/%d'))#設定時間 mm-dd  
-#     plt.gca().xaxis.set_major_locator(mdate.DayLocator())
     plt.xlim(list(df["日期"])[100], list(df["日期"])[-1])
-#     plt.xticks(rotation=45)
-#     plt.gcf().autofmt_xdate()
-#     plt.setp(plt.xticks()[1], ha = "center")
-
-
-# In[1307]:
 
 
 mid = df["收盤"].rolling(26).mean()
@@ -141,10 +50,6 @@ sma5 = df["收盤"].rolling(5).mean()
 sma20 = df["收盤"].rolling(20).mean()
 sma100 = df["收盤"].rolling(100).mean()
 volume = df["成交量"].rolling(5).mean()
-
-
-# In[1311]:
-
 
 result = plt.figure(figsize = (30, 25))
 result.tight_layout()
@@ -211,10 +116,4 @@ low = min(df["買賣超"]) - 5000
 ax1.set_ylim([low, high])
 ax1.grid(axis = "y", color = "k", linestyle = "--", alpha = 0.5)
 adjustDate()
-
-
-# In[ ]:
-
-
-
-
+plt.show()
